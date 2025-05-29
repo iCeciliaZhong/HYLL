@@ -20,7 +20,7 @@
 module scan_fsm(
     input             clk_i, 
     input             rst_i,
-    input wire [23:0] color_data_o [0:`MATRIX_NUM-1][0:`MATRIX_SIZE-1][0:2*`MATRIX_SIZE-1],
+    input wire [23:0] color_data_i [0:`MATRIX_NUM-1][0:`MATRIX_SIZE-1][0:2*`MATRIX_SIZE-1],
     input wire [`PWM_DEPTH-1:0] pwm_cnt_i,
     output reg [4:0]  led_sel,       // [4:3]matrix sel，[2:0]row sel
     output            col_shift_clk_o,
@@ -91,9 +91,9 @@ always @(posedge clk_i or negedge rst_i) begin
                     state <= `SCAN_SHIFT;
                     shift_cnt <= 0;
                     for (int m=0; m<`MATRIX_NUM; m=m+1) begin
-                        r_data[m] <= color_data_o[m][row_cnt];  
-                        g_data[m] <= color_data_o[m][row_cnt];
-                        b_data[m] <= color_data_o[m][row_cnt];
+                        r_data[m] <= color_data_i[m][row_cnt];  
+                        g_data[m] <= color_data_i[m][row_cnt];
+                        b_data[m] <= color_data_i[m][row_cnt];
                     end
                 end
             end
@@ -115,7 +115,7 @@ always @(posedge clk_i or negedge rst_i) begin
             
             
             `SCAN_LATCH: begin
-                led_latch_o <= 1'b0;  // negedge
+                led_latch_o <= 1'b0;   // negedge
                 led_en_o    <= 1'b0;   // enable led
                 state       <= `SCAN_UPDATE;
                 led_sel     <= {matrix_cnt, row_cnt}; 

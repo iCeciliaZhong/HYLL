@@ -15,45 +15,50 @@
 // 2025-05-28    Cecilia           0.6                  Original
 //  
 // *********************************************************************************
-// top.v
+
 `include "defines.vh"
 
 module top(
     input clk,
-    input reset,
-    output reg led0,
-    output reg led1,
-    output [3:0] LED_DR,
-    output [3:0] LED_DG,
-    output [3:0] LED_DB,
-    output [4:0] LED_ROW,
-    output LED_CLK,
-    output LED_STB,
-    output LED_OE
+    input rst,
+    output reg led0, // rst
+    output reg led1, // clk
+
+    output [3:0][7:0] led_row,
+    output [3:0][7:0] led_col_r,,
+    output [3:0][7:0] led_col_g,
+    output [3:0][7:0] led_col_b
 );
 
-// 信号声明
+    wire [3:0] LED_DR;
+    wire [3:0] LED_DG;
+    wire [3:0] LED_DB;
+    wire [4:0] LED_ROW;
+    wire shift_clk_o;
+    wire LED_STB;
+    wire LED_OE;
+
+
+
 wire [`PWM_DEPTH-1:0] pwm_cnt;
 wire frame_end;
 
-// PWM控制模块实例化
-pwm_ctrl #(
-    .DEPTH(`PWM_DEPTH)
-) u_pwm_ctrl(
-    .clk(clk),
-    .rst_n(~reset),  // 注意复位极性转换
-    .frame_end(frame_end),
-    .cnt(pwm_cnt)
+
+pwm_ctrl  u_pwm_ctrl(
+    .clk_i(clk),
+    .rst_i(~rst), 
+    .frame_end_o(frame_end),
+    .pwm_cnt_o(pwm_cnt)
 );
 
 
 scan_fsm u_scan_fsm(
     .clk_i(clk),
-    .rst_i(reset),
-    .color_data_o(/* 连接颜色数据源 */),
+    .rst_i(rst),
+    .color_data_i(/* 连接颜色数据源 */),
     .pwm_cnt_i(pwm_cnt),
     .led_sel(LED_ROW),
-    .col_shift_clk_o(LED_CLK),
+    .col_shift_clk_o(shift_clk_o),
     .led_latch_o(LED_STB),
     .led_en_o(LED_OE),
     .frame_end_o(frame_end),
@@ -62,11 +67,18 @@ scan_fsm u_scan_fsm(
     .led_b_o(LED_DB)
 );
 
+//row sel
+decoder_3to8 u_d1(
+    .data_3bit_i (LED_ROW[2:0]),
+    .decoder_en_i(1'b1),
+    .data_8bit_o (led_row[(LED_ROW[4:3]):0][7:0])
+);
+
 endmodule
 /*
 module top(
     input clk,
-    input reset,
+    input rst,
     output reg led0,
     output reg led1,
     
@@ -77,7 +89,7 @@ module top(
     
     // 行选择信号扩展
     output [4:0] LED_ROW,  // [4:3]模块选择，[2:0]行选择
-    output LED_CLK,
+    output shift_clk_o,
     output reg LED_STB,
     output LED_OE
 );
@@ -112,8 +124,8 @@ reg [15:0] r_data [0:3];
 reg [15:0] g_data [0:3];
 reg [15:0] b_data [0:3];
 
-always @(posedge clk or negedge reset) begin
-    if (!reset) begin
+always @(posedge clk or negedge rst) begin
+    if (!rst) begin
         counter <= 0;
         state <= `STATE_IDLE;
         row_cnt <= 0;
@@ -143,7 +155,7 @@ always @(posedge clk or negedge reset) begin
             
             // 数据移位状态
             `STATE_SHIFT: begin
-                LED_CLK <= 0;
+                shift_clk_o <= 0;
                 if (shift_cnt < `TOTAL_WIDTH) begin
                     // 输出数据到所有模块
                     for (integer m=0; m<4; m=m+1) begin
@@ -152,7 +164,7 @@ always @(posedge clk or negedge reset) begin
                         LED_DB[m] <= b_data[m][shift_cnt];
                     end
                     shift_cnt <= shift_cnt + 1;
-                    LED_CLK <= 1; // 生成时钟上升沿
+                    shift_clk_o <= 1; // 生成时钟上升沿
                 end else begin
                     state <= `STATE_LATCH;
                     LED_STB <= 1; // 锁存数据

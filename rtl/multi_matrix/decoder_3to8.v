@@ -30,14 +30,15 @@ wire sel5 = (data_3bit_i == 3'b101);
 wire sel6 = (data_3bit_i == 3'b110);
 wire sel7 = (data_3bit_i == 3'b111);
 
-assign data_8bit_o = ({`MATRIX_SIZE{sel0}} & 8'b0000_0001) |
+assign data_8bit_o = {`MATRIX_SIZE{decoder_en_i}} & 
+                    (({`MATRIX_SIZE{sel0}} & 8'b0000_0001) |
                      ({`MATRIX_SIZE{sel1}} & 8'b0000_0010) |
                      ({`MATRIX_SIZE{sel2}} & 8'b0000_0100) |
                      ({`MATRIX_SIZE{sel3}} & 8'b0000_1000) |
                      ({`MATRIX_SIZE{sel4}} & 8'b0001_0000) |
                      ({`MATRIX_SIZE{sel5}} & 8'b0010_0000) |
                      ({`MATRIX_SIZE{sel6}} & 8'b0100_0000) |
-                     ({`MATRIX_SIZE{sel7}} & 8'b1000_0000) ;
+                     ({`MATRIX_SIZE{sel7}} & 8'b1000_0000));
 
 
 endmodule
