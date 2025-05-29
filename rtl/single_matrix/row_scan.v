@@ -18,16 +18,16 @@
 
 `include "defines.vh"
 
-module top (
+module row_scan (
     input            clk_i,          // 50MHz
     input            rst_i,                        
-    output reg [7:0] led_row_o,      // 行控制信号（高电平有效）
+    output     [7:0] led_row_o,      // 行控制信号（高电平有效）
     output reg [7:0] led_col_r_o,    // 列控制信号（低电平有效）
     output reg [7:0] led_col_g_o,    // 列控制信号（低电平有效）
     output reg [7:0] led_col_b_o     // 列控制信号（低电平有效）
 );
 
-wire [2:0] row_sel;
+reg [2:0] row_sel;
 // row display time
 localparam ROW_TIME = (`CLK_FREQ / (`REFRESH_RATE * `ROW_NUM)) - 1;
 
@@ -107,8 +107,9 @@ decoder_3to8 u_d1(
     .data_8bit_o (led_row_o)
 );
 
+
 // display mem initialize
-initial begin
+initial begin:init
     integer r, c;
     for (r = 0; r < 8; r = r + 1)
         for (c = 0; c < 8; c = c + 1) begin
