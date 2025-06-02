@@ -1,7 +1,7 @@
 module Marquee (
     input clk,      // 50MHz时钟输入
     input rst, //复位功能     
-    output led[1:0], //指示灯
+    output [1:0]led, //指示灯
     output reg [7:0] led_row,  // 行控制信号（高电平有效）
     output reg [7:0] led_col_r,   // 列控制信号（低电平有效）
     output reg [7:0] led_col_g,   // 列控制信号（低电平有效）
