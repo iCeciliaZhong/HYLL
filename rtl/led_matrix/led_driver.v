@@ -62,7 +62,7 @@ always @(posedge clk or negedge rst_n) begin
     end else begin
         // row
         if (pwm_cycle_end) begin
-            if (current_row < MATRIX_SIZE-1) begin
+            if (current_row < `MATRIX_SIZE-1) begin
                 current_row <= current_row + 1;
             end else begin
                 current_row <= 0;
@@ -77,7 +77,7 @@ always @(posedge clk or negedge rst_n) begin
         end
         
         // column
-        if (col_counter < MATRIX_SIZE) begin
+        if (col_counter < `MATRIX_SIZE) begin
             read_addr <= {row_counter, col_counter};
             // column data
             col_r_data[col_counter] <= (pixel_data[7:5] > pwm_counter[7:5]); 

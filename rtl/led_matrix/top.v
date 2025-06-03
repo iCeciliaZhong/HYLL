@@ -19,23 +19,23 @@
 `include "defines.vh"
 
 module top(
-    input wire clk,             // 系统时钟 (100 MHz)
-    input wire rst_n,           // 复位信号 (低有效)
-    input wire uart_rx,         // UART接收数据
+    input wire clk,             
+    input wire rst_n,           // 0 valid
+    input wire uart_rx,         
     
-    // 2088RGB行驱动信号 (低电平有效)
+    
     output wire [`MATRIX_SIZE-1:0] row_sel, 
     
-    // 2088RGB列驱动信号 (RGB各16个)
+    
     output wire [`MATRIX_SIZE-1:0] col_r,
     output wire [`MATRIX_SIZE-1:0] col_g,
     output wire [`MATRIX_SIZE-1:0] col_b,
     
-    // 状态指示
-    output wire [1:0] led_state // LED状态指示
+    
+    output wire [1:0] led_state 
 );
 
-// 内部信号
+
 wire [`COLOR_DEPTH-1:0] pixel_data;
 wire [`ADDR_WIDTH-1:0] read_addr;
 wire pwm_cycle_end;
@@ -43,7 +43,7 @@ wire [7:0] pwm_counter;
 wire [3:0] row_counter;
 wire [3:0] col_counter;
 
-// 模块实例化
+
 frame_buffer u_frame_buffer(
     .clk(clk),
     .rst_n(rst_n),
