@@ -15,6 +15,8 @@
 //  
 // *********************************************************************************
 
+`include "defines.vh"
+
 module uart_receiver #(
     parameter CLK_FREQ = 50_000_000,  // 50MHz
     parameter BAUD_RATE = 115200      
@@ -22,7 +24,7 @@ module uart_receiver #(
     input wire clk,
     input wire rst_n,
     input wire rx,
-    output reg [7:0] rx_data,
+    output reg [`COLOR_DEPTH-1:0] rx_data,
     output reg rx_valid
 );
 
@@ -99,7 +101,10 @@ always @(posedge clk or negedge rst_n) begin
                 end
             end
             
-            default: state <= 0;
+            default: begin
+                state <= 0;
+                rx_data <= rx_data;
+            end
         endcase
     end
 end

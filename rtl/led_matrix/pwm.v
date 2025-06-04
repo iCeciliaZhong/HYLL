@@ -23,22 +23,19 @@ module pwm(
     output reg pwm_cycle_end    
 );
 
-
 parameter PWM_MAX = 255;        
-
 
 always @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin
         pwm_counter <= 0;
         pwm_cycle_end <= 0;
     end else begin
-        pwm_cycle_end <= 0;
+        pwm_cycle_end <= (pwm_counter == PWM_MAX);
         
         if (pwm_counter < PWM_MAX) begin
             pwm_counter <= pwm_counter + 1;
         end else begin
             pwm_counter <= 0;
-            pwm_cycle_end <= 1; 
         end
     end
 end

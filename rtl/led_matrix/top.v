@@ -23,18 +23,14 @@ module top(
     input wire rst_n,           // 0 valid
     input wire uart_rx,         
     
-    
     output wire [`MATRIX_SIZE-1:0] row_sel, 
-    
     
     output wire [`MATRIX_SIZE-1:0] col_r,
     output wire [`MATRIX_SIZE-1:0] col_g,
     output wire [`MATRIX_SIZE-1:0] col_b,
     
-    
     output wire [1:0] led_state 
 );
-
 
 wire [`COLOR_DEPTH-1:0] pixel_data;
 wire [`ADDR_WIDTH-1:0] read_addr;
@@ -42,7 +38,6 @@ wire pwm_cycle_end;
 wire [7:0] pwm_counter;
 wire [3:0] row_counter;
 wire [3:0] col_counter;
-
 
 frame_buffer u_frame_buffer(
     .clk(clk),
