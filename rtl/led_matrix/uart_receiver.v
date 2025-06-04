@@ -21,13 +21,13 @@ module uart_receiver #(
     parameter CLK_FREQ = 50_000_000,  // 50MHz
     parameter BAUD_RATE = 115200      
 )(
-    input wire clk,
-    input wire rst_n,
-    input wire rx,
-    output reg [`COLOR_DEPTH-1:0] rx_data,
-    output reg rx_valid
+    input wire  clk,
+    input wire  rst_n,
+    input wire  rx,
+    output reg  [`COLOR_DEPTH-1:0] rx_data,
+    output reg  rx_valid
 );
-
+    
 // 内部参数
 localparam SAMPLE_RATE = CLK_FREQ / BAUD_RATE;
 localparam SAMPLE_HALF = SAMPLE_RATE / 2;

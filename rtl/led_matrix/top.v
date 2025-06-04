@@ -14,6 +14,7 @@
 // -----------------------------------------------------------------------
 // 2025-05-29    Cecilia           0.6                  Original
 // 2025-06-02    Cecilia           0.88                 互连变量统一
+// 2025-06-04    Cecilia           0.9                  支持显回逻辑
 // *********************************************************************************
 
 `include "defines.vh"
@@ -24,7 +25,7 @@ module top(
     input wire uart_rx,         
     
     output wire [`MATRIX_SIZE-1:0] row_sel, 
-    
+    output wire                    uart_tx, 
     output wire [`MATRIX_SIZE-1:0] col_r,
     output wire [`MATRIX_SIZE-1:0] col_g,
     output wire [`MATRIX_SIZE-1:0] col_b,
@@ -45,7 +46,8 @@ frame_buffer u_frame_buffer(
     .uart_rx(uart_rx),
     .read_addr(read_addr),
     .pixel_data(pixel_data),
-    .led_state(led_state)
+    .led_state(led_state),
+    .uart_tx(uart_tx)  
 );
 
 led_driver u_led_driver(
