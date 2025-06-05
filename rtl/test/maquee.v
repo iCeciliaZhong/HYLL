@@ -1,4 +1,4 @@
-module Marquee (
+module marquee (
     input clk,      // 50MHz时钟输入
     input rst, //复位功能     
     output [1:0]led, //指示灯
